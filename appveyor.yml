@@ -6,7 +6,7 @@ image: Visual Studio 2017
 environment:
   matrix:
   # node.js
-    - nodejs_version: "lts/erbium"
+    - nodejs_version: "12"
 
 cache:
   - node_modules
