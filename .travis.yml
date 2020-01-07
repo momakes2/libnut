@@ -5,10 +5,10 @@ cache: npm
 matrix:
   include:
     - os: linux
-      node_js: "10"
+      node_js: "lts/erbium"
     - os: osx
       osx_image: xcode11
-      node_js: "10"
+      node_js: "lts/erbium"
 
 addons:
   apt:
