@@ -54,14 +54,6 @@ void tapKey(char c, MMKeyFlags flags)
 	toggleKey(c, false, flags);
 }
 
-#define toggleUniKey(c, down) toggleKey(c, down, MOD_NONE)
-
-static void tapUniKey(char c)
-{
-	toggleUniKey(c, true);
-	toggleUniKey(c, false);
-}
-
 void typeString(const char *str)
 {
 	unsigned short c;
