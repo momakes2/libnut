@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
+set(SOURCE_FILES "src/main.cc" "src/keycode.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c" "src/keypress_linux.c")
 elseif (UNIX AND APPLE)
