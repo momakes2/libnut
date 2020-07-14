@@ -4,13 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/keypress.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
+set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
 if (UNIX AND NOT APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c" "src/keypress_linux.c")
 elseif (UNIX AND APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_macos.m")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_macos.m" "src/keypress_macos.c")
 elseif (WIN32)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_win32.c")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_win32.c" "src/keypress_win32.c")
 endif()
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
