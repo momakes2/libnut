@@ -1,20 +1,16 @@
 #include "keypress.h"
-#include "deadbeef_rand.h"
 #include "microsleep.h"
 
 #include <ctype.h> /* For isupper() */
 
 #include <X11/extensions/XTest.h>
-#include "xdisplay.h"
 
 /* Convenience wrappers around ugly APIs. */
-#define X_KEY_EVENT(display, key, is_press) \
-    (XTestFakeKeyEvent(display, \
-                        XKeysymToKeycode(display, key), \
-                        is_press, CurrentTime), \
-        XSync(display, false))
-#define X_KEY_EVENT_WAIT(display, key, is_press) \
-    (X_KEY_EVENT(display, key, is_press))
+#define X_KEY_EVENT(display, key, is_press)            \
+	(XTestFakeKeyEvent(display,                        \
+					   XKeysymToKeycode(display, key), \
+					   is_press, CurrentTime),         \
+	 XSync(display, false))
 
 void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
 {
@@ -22,10 +18,14 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
 	const Bool is_press = down ? True : False; /* Just to be safe. */
 
 	/* Parse modifier keys. */
-	if (flags & MOD_META) X_KEY_EVENT_WAIT(display, K_META, is_press);
-	if (flags & MOD_ALT) X_KEY_EVENT_WAIT(display, K_ALT, is_press);
-	if (flags & MOD_CONTROL) X_KEY_EVENT_WAIT(display, K_CONTROL, is_press);
-	if (flags & MOD_SHIFT) X_KEY_EVENT_WAIT(display, K_SHIFT, is_press);
+	if (flags & MOD_META)
+		X_KEY_EVENT(display, K_META, is_press);
+	if (flags & MOD_ALT)
+		X_KEY_EVENT(display, K_ALT, is_press);
+	if (flags & MOD_CONTROL)
+		X_KEY_EVENT(display, K_CONTROL, is_press);
+	if (flags & MOD_SHIFT)
+		X_KEY_EVENT(display, K_SHIFT, is_press);
 
 	X_KEY_EVENT(display, code, is_press);
 }
@@ -40,7 +40,8 @@ void toggleKey(char c, const bool down, MMKeyFlags flags)
 {
 	MMKeyCode keyCode = keyCodeForChar(c);
 
-	if (isupper(c) && !(flags & MOD_SHIFT)) {
+	if (isupper(c) && !(flags & MOD_SHIFT))
+	{
 		flags |= MOD_SHIFT; /* Not sure if this is safe for all layouts. */
 	}
 
@@ -69,24 +70,32 @@ void typeString(const char *str)
 	unsigned short c3;
 	unsigned long n;
 
-	while (*str != '\0') {
+	while (*str != '\0')
+	{
 		c = *str++;
 
 		// warning, the following utf8 decoder
 		// doesn't perform validation
-		if (c <= 0x7F) {
+		if (c <= 0x7F)
+		{
 			// 0xxxxxxx one byte
 			n = c;
-		} else if ((c & 0xE0) == 0xC0)  {
+		}
+		else if ((c & 0xE0) == 0xC0)
+		{
 			// 110xxxxx two bytes
 			c1 = (*str++) & 0x3F;
 			n = ((c & 0x1F) << 6) | c1;
-		} else if ((c & 0xF0) == 0xE0) {
+		}
+		else if ((c & 0xF0) == 0xE0)
+		{
 			// 1110xxxx three bytes
 			c1 = (*str++) & 0x3F;
 			c2 = (*str++) & 0x3F;
 			n = ((c & 0x0F) << 12) | (c1 << 6) | c2;
-		} else if ((c & 0xF8) == 0xF0) {
+		}
+		else if ((c & 0xF8) == 0xF0)
+		{
 			// 11110xxx four bytes
 			c1 = (*str++) & 0x3F;
 			c2 = (*str++) & 0x3F;
@@ -94,8 +103,7 @@ void typeString(const char *str)
 			n = ((c & 0x07) << 18) | (c1 << 12) | (c2 << 6) | c3;
 		}
 
-		toggleUniKey(n, true);
-		toggleUniKey(n, false);
+		tapKey(n, MOD_NONE);
 	}
 }
 
@@ -107,10 +115,12 @@ void typeStringDelayed(const char *str, const unsigned cpm)
 	/* Average milli-seconds per character */
 	const double mspc = (cps == 0.0) ? 0.0 : 1000.0 / cps;
 
-	while (*str != '\0') {
-		tapUniKey(*str++);
-        if (mspc > 0) {
-            microsleep(mspc);
-        }
+	while (*str != '\0')
+	{
+		tapKey(*str++, MOD_NONE);
+		if (mspc > 0)
+		{
+			microsleep(mspc);
+		}
 	}
 }
